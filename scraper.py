@@ -6,7 +6,7 @@ The scraper accepts a range of dates and outputs the tweets into a csv file.
 Each line of data in the csv file will be of the following:
 <status id>, <status date>, <content>
 
-This scraper uses the snscraper and pandas libraries.
+This scraper uses the snscraper library.
 """
 
 import snscrape.modules.twitter as snt
