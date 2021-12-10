@@ -24,5 +24,4 @@ for i, tweet in enumerate(snt.TwitterSearchScraper('Covid' or 'shitting').get_it
 
 # creating dataframe
 tweets_df = pd.DataFrame(tweets_lst, columns=['Tweet Id', 'Datetime', 'Text'])
-tweets_df.to_csv('tweets.csv', sep=',', index=False)
-
+tweets_df.to_csv(sep=',', index=False)
