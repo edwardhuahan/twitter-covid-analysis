@@ -30,7 +30,7 @@ max_tweets = 100
 
 # scrape data
 for i, tweet in enumerate(snt.TwitterSearchScraper('covid').get_items()):
-    if i > 10:
+    if i > max_tweets:
         break
     csvWriter.writerow([tweet.id, tweet.date, tweet.content])
 
