@@ -26,12 +26,14 @@ csvFile = open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf
 csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['id', 'date', 'contents', ])
 
-max_tweets = 100
+max_tweets = 1000
 
 # scrape data
 for i, tweet in enumerate(snt.TwitterSearchScraper('covid').get_items()):
     if i > max_tweets:
         break
+    if i % 10 == 0:
+        print(i)
     csvWriter.writerow([tweet.id, tweet.date, tweet.content])
 
 csvFile.close()
