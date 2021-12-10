@@ -14,9 +14,10 @@ class Tweet:
     date: datetime.datetime
     content: str
 
-    def __init__(self, tweet_id: int, date: datetime.datetime):
+    def __init__(self, tweet_id: int, date: datetime.datetime, content: str):
         self.tweet_id = tweet_id
         self.date = date
+        self.content = content
 
 
 def read_tweet_data(filename: str) -> list[Tweet]:
@@ -33,8 +34,9 @@ def read_tweet_data(filename: str) -> list[Tweet]:
         for row in reader:
             id = int(row[0])
             raw_date = row[1]
+            content = row[2]
 
-            tweet = Tweet(id, parse_time(raw_date))
+            tweet = Tweet(id, parse_time(raw_date), content)
             inputs_so_far.append(tweet)
 
     return inputs_so_far
