@@ -3,10 +3,11 @@
 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 import string
+from tweet import Tweet
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.stem import PorterStemmer
 
-stopwords = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself",
+stopwords = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you", "your", "yours", "yourself",
              "yourselves", "he", "him", "his", "himself", "she", "her", "hers", "herself", "it", "its", "itself",
              "they", "them", "their", "theirs", "themselves", "what", "which", "who", "whom", "this", "that", "these",
              "those", "am", "is", "are", "was", "were", "be", "been", "being", "have", "has", "had", "having", "do",
@@ -17,36 +18,43 @@ stopwords = ["i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you",
              "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
              "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
-
-def analyze_sentiment(msgs: list[str]) -> list[int]:
+def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, int]]:
     """ Return the compound normalized score in order of the tweets given"""
 
     analyzer = SentimentIntensityAnalyzer()
     scores_so_far = []
     for msg in msgs:
-        vs = analyzer.polarity_scores(msg)
-        scores_so_far.append(vs['compound'])
+        vs = analyzer.polarity_scores(msg.content)
+        scores_so_far.append(vs)
 
     return scores_so_far
 
 
-def clean_input(msgs: list[str]) -> list[str]:
+def clean_input(msgs: list[Tweet]) -> list[str]:
     """ Takes a list of strings and converts it into lowercase and also removes
         all punctuation
     """
 
     output = []
     for msg in msgs:
-        lower_str = msg.lower()
-        clean_str = ''.join([char for char in lower_str
-                             if char not in string.punctuation])
 
-        output.append(clean_str)
+        lower_msg = msg.content.lower()
+        lower_msg = lower_msg.replace('\n', ' ')
+        clean_msg = ''
+        for word in lower_msg.split(' '):
+            clean_word = ''
+            if '@' not in word and 'http' not in word:
+                clean_word = ''.join(char for char in word if char not in string.punctuation)
+                clean_word = clean_word + ' '
+
+            clean_msg = clean_msg + clean_word
+
+        output.append(clean_msg)
 
     return output
 
 
-def split_into_stems(msgs: list[str]) -> list[set[str]]:
+def split_into_stems(msgs: list[str]) -> list[list[str]]:
     """ Takes a list of cleaned input and splits it into word stems.
         Also removes all stopwords
     """
@@ -55,7 +63,9 @@ def split_into_stems(msgs: list[str]) -> list[set[str]]:
     stem_lists_so_far = []
     for msg in msgs:
         word_list = msg.split(' ')
-        topic_list = {porter.stem(word) for word in word_list if word not in stopwords}
+        topic_list = [porter.stem(word) for word in word_list if word not in stopwords]
         stem_lists_so_far.append(topic_list)
 
     return stem_lists_so_far
+
+# TODO: count occurences for each word
