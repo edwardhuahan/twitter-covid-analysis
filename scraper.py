@@ -20,23 +20,18 @@ from datetime import datetime, timedelta
 now = datetime.now()
 now = now.strftime('%Y-%m-%d')
 
-max_tweets = 100
-
 # setting up the csv file and writer
 # open csv file, make new one if file not found
 csvFile = open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf8')
 csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['id', 'date', 'contents', ])
 
-# need to set the tweets somewhere
-tweets_lst = []
+max_tweets = 100
 
 # scrape data
-for i, tweet in enumerate(snt.TwitterSearchScraper('Covid' or 'shitting').get_items()):
+for i, tweet in enumerate(snt.TwitterSearchScraper('covid').get_items()):
     if i > 10:
         break
-    tweets_lst.append([tweet.id, tweet.date, tweet.content])
+    csvWriter.writerow([tweet.id, tweet.date, tweet.content])
 
-# creating dataframe
-tweets_df = pd.DataFrame(tweets_lst, columns=['Tweet Id', 'Datetime', 'Text'])
-tweets_df.to_csv(path_or_buf=None, sep=',', index=False)
+csvFile.close()
