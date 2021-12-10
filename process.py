@@ -48,16 +48,11 @@ def parse_time(raw_time: str) -> datetime.datetime:
         datetime.datetime object
     """
 
-    calendar = {
-        'Jan': 1, 'Feb': 2, 'Mar': 3, 'Apr': 4,
-        'May': 5, 'Jun': 6, 'Jul': 7, 'Aug': 8,
-        'Sep': 9, 'Oct': 10, 'Nov': 11, 'Dec': 12
-    }
-
-    split_data = raw_time.split(' ')
-    split_time = [int(value) for value in split_data[3].split(':')]
-    parsed_data = datetime.datetime(day=int(split_data[2]), month=calendar[split_data[1]],
-                                    year=int(split_data[5]), hour=split_time[0],
-                                    minute=split_time[1], second=split_time[2])
+    date_and_time = raw_time.split(' ')
+    split_date = [int(value) for value in date_and_time[0].split('-')]
+    split_time = [value for value in date_and_time[1].split(':')]
+    parsed_data = datetime.datetime(day=split_date[2], month=split_date[1],
+                                    year=split_date[0], hour=int(split_time[0]),
+                                    minute=int(split_time[1]))
 
     return parsed_data
