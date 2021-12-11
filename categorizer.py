@@ -3,6 +3,8 @@ DEC 10 2021
 
 This script is used to categorize each tweet into a certain category by its contents.
 
+Requires csv file of tweets with a header named 'contents'
+Outputs csv file in the following format: <date>, <score>
 """
 import pandas as pd
 import csv
