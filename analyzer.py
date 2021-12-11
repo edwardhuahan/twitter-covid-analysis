@@ -18,7 +18,8 @@ stopwords = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
              "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
              "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
-def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, int]]:
+
+def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
     """ Return the compound normalized score in order of the tweets given"""
 
     analyzer = SentimentIntensityAnalyzer()
@@ -68,4 +69,46 @@ def split_into_stems(msgs: list[str]) -> list[list[str]]:
 
     return stem_lists_so_far
 
-# TODO: count occurences for each word
+
+def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
+    """ Return how many times a certain stem ending occurs
+    """
+
+    count_so_far = {}
+
+    for stems in stems_list:
+        for stem in stems:
+            if stem not in count_so_far:
+                count_so_far[stem] = 0
+            count_so_far[stem] = count_so_far[stem] + 1
+
+    return count_so_far
+
+
+def calculate_word_emotion(scores: list[dict[str, int]], roots: list[list[str]]) -> dict[str, float]:
+    """ Return each word with its average emotional score
+
+        >>> import reader
+        >>> a = reader.read_tweet_data('scraper-output/scrapes.csv')
+        >>> scores = analyze_sentiment(a)
+        >>> clean = clean_input(a)
+        >>> roots = split_into_stems(clean)
+        >>> calculate_word_emotion(scores, roots)
+    """
+
+    dict_so_far = {}
+    count_so_far = calculate_word_count(roots)
+
+    for i in range(len(scores)):
+        # Get the emotional score of a sentence and add it to the sum for every root found in the sentence
+        stems = roots[i]
+        score = scores[i]
+        for stem in stems:
+            if stem not in dict_so_far:
+                dict_so_far[stem] = 0
+            dict_so_far[stem] = dict_so_far[stem] + score['compound']
+
+    for root in dict_so_far:
+        dict_so_far[root] = dict_so_far[root] / count_so_far[root]
+
+    return dict_so_far
