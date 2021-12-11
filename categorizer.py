@@ -45,3 +45,4 @@ for i in tweets_df.index:
                        mode='a', newline='', encoding='utf8')
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow([tweets_df.loc[i, 'col1']])
+        csvFile.close()
