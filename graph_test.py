@@ -4,8 +4,6 @@ import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
-import tweet
-import analyzer
 
 # fig = go.Figure(
 #     data=[go.Bar(y=[2, 1, 3])],
@@ -36,12 +34,12 @@ import analyzer
 #     return graph_data
 
 df = pd.DataFrame({
-    'Sentiment_labels': ['Negative', 'Positive', 'Compound', 'Negative', 'Positive', 'Compound'],
+    'Sentiment': ['Negative', 'Positive', 'Compound', 'Negative', 'Positive', 'Compound'],
     'Topics': ['Covid', 'Covid', 'Covid', 'Vaccine', 'Vaccine', 'Vaccine'],
-    'Sentiment_score': [1, 2, 1, 3, 2, 1]
+    'Sentiment Score': [1, 2, 1, 3, 2, 1]
 })
 
-fig = px.bar(df, x='Topics', y='Sentiment_score', animation_frame='Sentiment_labels',
-             animation_group='Topics', range_y=[0, 5], barmode='group')
-fig.show()
+fig = px.bar(df, x='Topics', y='Sentiment Score', animation_frame='Sentiment',
+             animation_group='Topics', range_y=[0, 5], color='Sentiment', barmode='group')
+# fig.show()
 fig.write_html('my_figure.html')
