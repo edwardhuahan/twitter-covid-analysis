@@ -56,4 +56,5 @@ for i in tweets_df.index:
                        mode='a', newline='', encoding='utf8')
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow([tweets_df.loc[i, 'contents']])  # check columns when using for reals
+        #  in the actual implementation csvWriter will write [tweets_df.loc[i, 'date'], score]
         csvFile.close()
