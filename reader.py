@@ -1,6 +1,6 @@
 """ CSC110 Final Project
 
-Edward Han, Zekun Liu, Arvin Gingoyon
+This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 import csv
 import datetime
@@ -8,7 +8,8 @@ from tweet import Tweet
 
 
 def read_tweet_data(filename: str) -> list[Tweet]:
-    """ Read csv file data
+    """
+        Read csv file data and create Tweet dataclasses using the values in each column
     """
 
     inputs_so_far = []
@@ -23,6 +24,7 @@ def read_tweet_data(filename: str) -> list[Tweet]:
             raw_date = row[1]
             content = row[2]
 
+            # Convert every
             tweet = Tweet(id, parse_time(raw_date), content)
             inputs_so_far.append(tweet)
 
