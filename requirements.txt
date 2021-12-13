@@ -1,4 +1,4 @@
-# CSC110 Fall 2020: Python libraries we'll be using this semester.
+# CSC110 Fall 2021: Python libraries we'll be using this semester.
 
 # Testing and code checking
 hypothesis

@@ -54,7 +54,7 @@ def analyze_tweets(tweets: list[Tweet]) -> list[tuple[Tweet, dict[str, float], s
     # Analyze each sentence
     analyzed_tweets_so_far = []
     for i in range(len(tweets)):
-        categories = find_sentence_topic(stems[i])
+        categories = calc_sentence_topic(stems[i])
         analyzed_tweets_so_far.append((tweets[i], sentiment_score[i], categories))
 
     return analyzed_tweets_so_far
@@ -100,7 +100,7 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
     """
 
     dict_so_far = {}
-    count_so_far = calculate_word_count(roots)
+    count_so_far = calc_word_emotions(roots)
 
     for i in range(len(scores)):
         # Get the emotional score of a sentence and add it to the sum
@@ -118,12 +118,12 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
     return dict_so_far
 
 
-def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
+def calc_word_count(stems_list: list[list[str]]) -> dict[str, int]:
     """ For a given list of list of stems, return a dictionary with each stem as a key
     and how many times a stem was counted as the value.
 
     >>> example_list = [['test', 'one', 'two', 'three'], ['three', 'test']]
-    >>> count = calculate_word_count(example_list)
+    >>> count = calc_word_count(example_list)
     >>> count == {'test': 2, 'one': 1, 'two': 1, 'three': 2}
     True
 
@@ -140,34 +140,34 @@ def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
     return count_so_far
 
 
-def find_sentence_topic(sentence: list[str]) -> set[str]:
+def calc_sentence_topic(sentence: list[str]) -> set[str]:
     """Checks which category a sentence belongs to
     If word is in keyword then check which topic it's in and return the topic as str
     Else return _
 
     >>> example_sentence = ['vaccines are a hoax']
     >>> example_stems = split_into_stems(example_sentence)
-    >>> find_sentence_topic(example_stems[0]) == {'conspiracy', 'vaccine'}
+    >>> calc_sentence_topic(example_stems[0]) == {'conspiracy', 'vaccine'}
     True
     """
 
     category_so_far = set()
     for word in sentence:
-        category = find_word_topic(word)
+        category = calc_word_topic(word)
         if category != '_':
             category_so_far.add(category)
 
     return category_so_far
 
 
-def find_word_topic(word: str) -> str:
+def calc_word_topic(word: str) -> str:
     """Checks which category a word belongs to
     If word is in keyword then check which topic it's in and return the topic as str
     Else return _
 
-    >>> find_word_topic('vaccin')
+    >>> calc_word_topic('vaccin')
     'vaccine'
-    >>> find_word_topic('test')
+    >>> calc_word_topic('test')
     '_'
     """
 
