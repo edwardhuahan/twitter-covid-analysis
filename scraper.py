@@ -24,43 +24,54 @@ import snscrape.modules.twitter as snt
 import csv
 from datetime import datetime, timedelta
 
-now = datetime.now()
-current_date = now.date()
-now = now.strftime('%Y-%m-%d')
 
-#  user inputs
-start_date = input('Input the start date YYYY/MM/DD')
-max_tweets = int(input('How many tweets to scrape (int)'))
+def scrape(start_date: str, max_tweets: int) -> None:
+    """
 
-#   Convert start_date into a datetime object
-start_date = datetime.strptime(start_date, "%Y/%m/%d")
-start_date = start_date.date()
+    :param start_date: Str, A date in the format YYYY/MM/DD
+    :param max_tweets: Int, The number of total tweets you want
+    :return: None, creates a csv file with the scraped tweets
+    """
+    now = datetime.now()
+    current_date = now.date()
+    # now = now.strftime('%Y-%m-%d')
 
-#  find tweets per day
-day_delta = current_date - start_date
-day_delta = day_delta.days
-tweets_per_day = max_tweets // (day_delta + 1)
+    #  user inputs
+    #  has been moved to the parameters
 
-# setting up the csv file and writer
-# open csv file, make new one if file not found
-csvFile = open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf8')
-csvWriter = csv.writer(csvFile)
-csvWriter.writerow(['id', 'date', 'contents', ])
+    #   Convert start_date into a datetime object
+    start_date = datetime.strptime(start_date, "%Y/%m/%d")
+    start_date = start_date.date()
 
-# scrape data
-while start_date <= current_date:
+    #  find tweets per day
+    day_delta = current_date - start_date
+    day_delta = day_delta.days
+    tweets_per_day = max_tweets // (day_delta + 1)
 
-    dt = start_date.strftime('%Y-%m-%d')
-    dtn = start_date + timedelta(days=1)
-    dtn = dtn.strftime('%Y-%m-%d')
+    # setting up the csv file and writer
+    # open csv file, make new one if file not found
+    csv_file = open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf8')
+    csv_writer = csv.writer(csv_file)
+    csv_writer.writerow(['id', 'date', 'contents', ])
 
-    search_term = f'covid OR coronavirus OR covid19 OR corona lang:en since:{dt} until:{dtn}'
+    # scrape data
+    while start_date <= current_date:
 
-    for i, tweet in enumerate(snt.TwitterSearchScraper(search_term).get_items()):
-        if i > tweets_per_day:
-            break
-        print(f'Found tweet number {i} for date {dt}')
-        csvWriter.writerow([tweet.id, tweet.date, tweet.content])
-    start_date += timedelta(days=1)
+        dt = start_date.strftime('%Y-%m-%d')
+        dtn = start_date + timedelta(days=1)
+        dtn = dtn.strftime('%Y-%m-%d')
 
-csvFile.close()
+        search_term = f'covid OR coronavirus OR covid19 OR corona lang:en since:{dt} until:{dtn}'
+
+        for i, tweet in enumerate(snt.TwitterSearchScraper(search_term).get_items()):
+            if i > tweets_per_day:
+                break
+            print(f'Found tweet number {i} for date {dt}')
+            csv_writer.writerow([tweet.id, tweet.date, tweet.content])
+        start_date += timedelta(days=1)
+
+    csv_file.close()
+
+
+if __name__ == "__main__":
+    scrape('2021/12/09', 1000)  # Default values
