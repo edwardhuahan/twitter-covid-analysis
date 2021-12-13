@@ -91,14 +91,14 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
     """ Return each word with its average emotional score,
     given a list of a list of stems and a list of sentiment dictionaries.
 
-    >>> import reader
-    >>> list_of_tweets = reader.read_tweet_data('scraper-output/scrapes.csv')
+    >>> import datetime
+    >>> list_of_tweets = [Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')]
     >>> scores = analyze_sentiment(list_of_tweets)
     >>> clean = clean_input(list_of_tweets)
     >>> roots = split_into_stems(clean)
     >>> emotions = calc_word_emotions(scores, roots)
-
-
+    >>> emotions['vaccin']
+    0.4404
     """
 
     dict_so_far = {}
