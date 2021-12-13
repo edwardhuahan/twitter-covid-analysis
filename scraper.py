@@ -23,6 +23,7 @@ This file is Copyright (c) 2021 Edward Han, Zekun Liu (ﾉ◕ヮ◕)ﾉ*:･ﾟ�
 import snscrape.modules.twitter as snt
 import csv
 from datetime import datetime, timedelta
+
 now = datetime.now()
 current_date = now.date()
 now = now.strftime('%Y-%m-%d')
