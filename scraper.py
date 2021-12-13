@@ -10,13 +10,9 @@ This scraper uses the snscraper library.
 """
 
 import snscrape.modules.twitter as snt
-import pandas as pd
-import numpy as np
 import csv
-import datetime as dt
-import time
 
-from datetime import datetime, timedelta
+from datetime import datetime
 now = datetime.now()
 now = now.strftime('%Y-%m-%d')
 
@@ -26,12 +22,18 @@ csvFile = open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf
 csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['id', 'date', 'contents', ])
 
-max_tweets = 100
+max_tweets = 1000
 
 # scrape data
+# currently the query and max_tweets must be changed manually in the script
+# pass twitter queries into snt.TwitterSearchScraper() according to twitter rules
+# in the future the keywords will be expanded and there will be inputs for dates and whatnot.
+# and the scraper will only scrape a certain amount of tweets from each day, every day in a range
 for i, tweet in enumerate(snt.TwitterSearchScraper('covid').get_items()):
-    if i > 10:
+    if i > max_tweets:
         break
+    if i % 10 == 0:
+        print(i)
     csvWriter.writerow([tweet.id, tweet.date, tweet.content])
 
 csvFile.close()
