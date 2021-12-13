@@ -7,6 +7,7 @@ import pandas as pd
 import csv
 import Tweet
 
+from analyzer import calculate_word_emotion, calculate_word_count, analyze_tweets
 
 # helpers
 
@@ -104,6 +105,7 @@ def average_scores(topic_dict: dict[str, list[dict[str, float]]]) -> dict[str, d
 # set-up dataframe
 
 def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> None:
+    """ Creates graph"""
 
     topics = []
     scores = []
