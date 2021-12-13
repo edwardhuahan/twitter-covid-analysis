@@ -11,7 +11,7 @@ This scraper uses the snscraper library.
 
 import snscrape.modules.twitter as snt
 import csv
-from datetime import datetime
+from datetime import datetime, timedelta
 now = datetime.now()
 current_date = now.date()
 now = now.strftime('%Y-%m-%d')
@@ -36,16 +36,18 @@ csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['id', 'date', 'contents', ])
 
 # scrape data
-# currently the query and max_tweets must be changed manually in the script
 # pass twitter queries into snt.TwitterSearchScraper() according to twitter rules
-# in the future the keywords will be expanded and there will be inputs for dates and whatnot.
-# and the scraper will only scrape a certain amount of tweets from each day, every day in a range
-
-for i, tweet in enumerate(snt.TwitterSearchScraper('covid').get_items()):
-    if i > max_tweets:
-        break
-    if i % 10 == 0:
-        print(i)
-    csvWriter.writerow([tweet.id, tweet.date, tweet.content])
+while start_date <= current_date:
+    # print(f'Current Date:{start_date}')
+    dt = start_date.strftime('%Y-%m-%d')
+    search_term = f'covid OR coronavirus OR covid19 OR corona lang:en since:{dt} until:{dt}'
+    print(f'search term:{search_term}')
+    for i, tweet in enumerate(snt.TwitterSearchScraper(search_term).get_items()):
+        if i > tweets_per_day:
+            break
+        if i % 10 == 0:
+            print(i)
+        csvWriter.writerow([tweet.id, tweet.date, tweet.content])
+    start_date += timedelta(days=1)
 
 csvFile.close()
