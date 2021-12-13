@@ -49,7 +49,7 @@ def scrape(start_date: str, max_tweets: int) -> None:
 
     # setting up the csv file and writer
     # open csv file, make new one if file not found
-    with open('scraper-output/scrapes.csv', mode='a', newline='', encoding='utf8') as csv_file:
+    with open('data.csv', mode='a', newline='', encoding='utf8') as csv_file:
         csv_writer = csv.writer(csv_file)
         csv_writer.writerow(['id', 'date', 'contents', ])
 
