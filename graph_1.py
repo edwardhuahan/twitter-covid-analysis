@@ -12,9 +12,7 @@ from tweet import Tweet
 import reader
 import nltk
 
-from analyzer import calc_word_emotions
-from analyzer import calc_word_count
-from analyzer import analyze_tweets
+from analyzer import calc_word_emotions, calc_word_count, analyze_tweets
 
 
 # helpers
