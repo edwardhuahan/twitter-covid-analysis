@@ -46,7 +46,7 @@ while start_date <= current_date:
         if i > tweets_per_day:
             break
         if i % 10 == 0:
-            print(i)
+            print(f'Found tweet number {i}')
         csvWriter.writerow([tweet.id, tweet.date, tweet.content])
     start_date += timedelta(days=1)
 
