@@ -13,7 +13,7 @@ def read_tweet_data(filename: str) -> list[Tweet]:
 
     inputs_so_far = []
 
-    with open(filename) as file:
+    with open(filename, encoding='utf8') as file:
         reader = csv.reader(file, delimiter=',')
         # Skip the header because it is not useful
         next(reader)
