@@ -10,6 +10,13 @@ Each line of data in the csv file will be of the following:
 The following is the csv header:
 id,date,contents
 
+!!!!!!!!!!!!!!!!!!!!!!!!!!!1
+TWITTER API SUCKS AND EVERYTIME YOU START A NEW SCRAPE REQUEST THERE IS A CHANCE IT'S GOING TO
+DECLINE GIVING SNSCRAPER A GUEST TOKEN
+WHICH MEANS THAT EVERY TIME IT SEARCHES FOR A NEW DAY THERE'S A CHANCE IT JUST BRICKS BECAUSE
+TWITTER WANTS IT TO
+THERE'S NO WAY AROUND THIS EXCEPT REQUEST MORE TWEETS EACH DAY TO MINIMIZE THE RISK
+
 This file is Copyright (c) 2021 Edward Han, Zekun Liu (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧, Arvin Gingoyon
 """
 
@@ -31,7 +38,7 @@ start_date = start_date.date()
 #  find tweets per day
 day_delta = current_date - start_date
 day_delta = day_delta.days
-tweets_per_day = max_tweets // day_delta
+tweets_per_day = max_tweets // (day_delta + 1)
 
 # setting up the csv file and writer
 # open csv file, make new one if file not found
