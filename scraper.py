@@ -1,12 +1,16 @@
 """
 DEC 09 2021
 
+CSC Final Project 2021
+
 This script is used to scrape tweets from twitter for use in my csc110 final project
 The scraper accepts a range of dates and outputs the tweets into a csv file.
 Each line of data in the csv file will be of the following:
 <status id>, <status date>, <content>
+The following is the csv header:
+id,date,contents
 
-This scraper uses the snscraper library.
+This file is Copyright (c) 2021 Edward Han, Zekun Liu (ﾉ◕ヮ◕)ﾉ*:･ﾟ✧, Arvin Gingoyon
 """
 
 import snscrape.modules.twitter as snt
