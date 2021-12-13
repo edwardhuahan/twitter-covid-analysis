@@ -8,7 +8,7 @@ Outputs csv file in the following format: <date>, <score>
 """
 import pandas as pd
 import csv
-
+#  TODO UPDATE LIST OF KEYWORDS AND TOPICS
 tweets_df = pd.read_csv('scraper-output/pd-keyword-test.csv')
 
 map_topics = {'vaccine': {'vaccine'}, 'mask': {'mask'}}
@@ -24,7 +24,7 @@ def check_word(wd: str) -> str:
     If word is in keyword then check which topic it's in and return the topic as str
     Else return _
     """
-    # CHANGE THIS BY CONVERTING THE WORD TO STEM AND THEN CHECKING
+    #  TODO CHANGE THIS BY CONVERTING THE WORD TO STEM AND THEN CHECKING
     # EFFICIENCY BABY
     if wd in keywords:
         for tpc in map_topics:
@@ -56,5 +56,5 @@ for i in tweets_df.index:
                        mode='a', newline='', encoding='utf8')
         csvWriter = csv.writer(csvFile)
         csvWriter.writerow([tweets_df.loc[i, 'contents']])  # check columns when using for reals
-        #  in the actual implementation csvWriter will write [tweets_df.loc[i, 'date'], score]
+        #  TODO in the actual implementation csvWriter will write [tweets_df.loc[i, 'date'], score]
         csvFile.close()
