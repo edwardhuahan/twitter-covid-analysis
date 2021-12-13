@@ -1,6 +1,6 @@
 """ CSC110 Final Project
 
-Edward Han, Zekun Liu, Arvin Gingoyon
+This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 import string
 from tweet import Tweet
@@ -18,9 +18,61 @@ stopwords = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
              "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
              "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
+map_topics = {'conspiracy': {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip'},
+              'masks': {'antimask', 'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth'},
+              'quarantine': {'quarantin', 'lockdown', 'shutdown'},
+              'vaccine': {'antivax', 'mrna', 'vaccin', 'needl', 'vax', 'booster'}}
+topic_keywords = {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip', 'antimask',
+                  'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth', 'quarantin',
+                  'lockdown', 'shutdown', 'antivax', 'mrna', 'vaccin', 'needl',
+                  'vax', 'booster'}
+
+
+def analyze_tweets(tweets: list[Tweet]) -> list[tuple[Tweet, dict[str, float], set[str]]]:
+    """ Given a list of tweets, return a list containing tuples with the tweets and their
+    sentiment scores and category.
+
+    >>> import datetime
+    >>> example = [Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')]
+    >>> example_analysis = analyze_tweets(example)
+    >>> example_analysis[0][0].content
+    'vaccines are good'
+    >>> example_analysis[0][1]
+    {'neg': 0.0, 'neu': 0.408, 'pos': 0.592, 'compound': 0.4404}
+    >>> example_analysis[0][2]
+    {'vaccine'}
+    """
+
+    sentiment_score = analyze_sentiment(tweets)
+    clean = clean_input(tweets)
+    stems = split_into_stems(clean)
+
+    # Analyze each sentence
+    analyzed_tweets_so_far = []
+    for i in range(len(tweets)):
+        categories = find_sentence_topic(stems[i])
+        analyzed_tweets_so_far.append((tweets[i], sentiment_score[i], categories))
+
+    return analyzed_tweets_so_far
+
 
 def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
-    """ Return the compound normalized score in order of the tweets given"""
+    """ Return the emotional score in order of the tweets given using the VADER lexicon.
+    The return type is a list of dictionaries with compound, neutral, positive and negative
+    emotional scores which can be accessed using 'compound', 'neu', 'pos' or 'neg'
+
+    >>> import datetime
+    >>> example_pos_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')
+    >>> analysis = analyze_sentiment([example_pos_tweet])
+    >>> analysis[0]['compound']
+    0.4404
+
+    >>> example_neg_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'i hate vaccines')
+    >>> analysis = analyze_sentiment([example_neg_tweet])
+    >>> analysis[0]['compound']
+    -0.5719
+
+    """
 
     analyzer = SentimentIntensityAnalyzer()
     scores_so_far = []
@@ -32,32 +84,46 @@ def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
 
 
 def clean_input(msgs: list[Tweet]) -> list[str]:
-    """ Takes a list of strings and converts it into lowercase and also removes
-        all punctuation
+    """ Takes a list of strings and returns a new list of strings that converts all tweet contents
+    into lowercase and also removes all punctuation. Removes hyperlinks and new lines.
+
+    >>> import datetime
+    >>> example_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'Vaccines, are good!??')
+    >>> clean_input([example_tweet])
+    ['vaccines are good']
     """
 
     output = []
     for msg in msgs:
 
+        # Set to lowercase and remove all new lines for better processing.
         lower_msg = msg.content.lower()
         lower_msg = lower_msg.replace('\n', ' ')
         clean_msg = ''
         for word in lower_msg.split(' '):
             clean_word = ''
+
+            # Ignore all word snippets that are hyperlinks or include the @ character
             if '@' not in word and 'http' not in word:
+                # Only add characters that are not punctuation
                 clean_word = ''.join(char for char in word if char not in string.punctuation)
                 clean_word = clean_word + ' '
 
             clean_msg = clean_msg + clean_word
 
-        output.append(clean_msg)
+        output.append(clean_msg.strip())
 
     return output
 
 
 def split_into_stems(msgs: list[str]) -> list[list[str]]:
     """ Takes a list of cleaned input and splits it into word stems.
-        Also removes all stopwords
+    Also removes all stopwords, which are words typically ignored in linguistic analysis.
+
+    >>> example_list = ['vaccines are good']
+    >>> split_into_stems(example_list)
+    [['vaccin', 'good']]
+
     """
     porter = PorterStemmer()
 
@@ -71,7 +137,14 @@ def split_into_stems(msgs: list[str]) -> list[list[str]]:
 
 
 def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
-    """ Return how many times a certain stem ending occurs
+    """ For a given list of list of stems, return a dictionary with each stem as a key
+    and how many times a stem was counted as the value.
+
+    >>> example_list = [['test', 'one', 'two', 'three'], ['three', 'test']]
+    >>> count = calculate_word_count(example_list)
+    >>> count == {'test': 2, 'one': 1, 'two': 1, 'three': 2}
+    True
+
     """
 
     count_so_far = {}
@@ -86,14 +159,15 @@ def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
 
 
 def calculate_word_emotion(scores: list[dict[str, int]], roots: list[list[str]]) -> dict[str, float]:
-    """ Return each word with its average emotional score
+    """ Return each word with its average emotional score, given a list of list of stems and
+    a list of sentiment dictionaries.
 
-        >>> import reader
-        >>> a = reader.read_tweet_data('scraper-output/scrapes.csv')
-        >>> scores = analyze_sentiment(a)
-        >>> clean = clean_input(a)
-        >>> roots = split_into_stems(clean)
-        >>> calculate_word_emotion(scores, roots)
+    >>> import reader
+    >>> list_of_tweets = reader.read_tweet_data('scraper-output/scrapes.csv')
+    >>> scores = analyze_sentiment(list_of_tweets)
+    >>> clean = clean_input(list_of_tweets)
+    >>> roots = split_into_stems(clean)
+
     """
 
     dict_so_far = {}
@@ -112,3 +186,43 @@ def calculate_word_emotion(scores: list[dict[str, int]], roots: list[list[str]])
         dict_so_far[root] = dict_so_far[root] / count_so_far[root]
 
     return dict_so_far
+
+
+def find_sentence_topic(sentence: list[str]) -> set[str]:
+    """Checks which category a sentence belongs to
+    If word is in keyword then check which topic it's in and return the topic as str
+    Else return _
+
+    >>> example_sentence = ['vaccines are a hoax']
+    >>> example_stems = split_into_stems(example_sentence)
+    >>> find_sentence_topic(example_stems[0]) == {'conspiracy', 'vaccine'}
+    True
+    """
+
+    category_so_far = set()
+    for word in sentence:
+        category = find_word_topic(word)
+        if category != '_':
+            category_so_far.add(category)
+
+    return category_so_far
+
+
+def find_word_topic(word: str) -> str:
+    """Checks which category a word belongs to
+    If word is in keyword then check which topic it's in and return the topic as str
+    Else return _
+
+    >>> find_word_topic('vaccin')
+    'vaccine'
+    >>> find_word_topic('test')
+    '_'
+    """
+
+    if word in topic_keywords:
+        for tpc in map_topics:
+            if word in map_topics[tpc]:  # this actually won't work unless you convert word to stem
+                return tpc
+    else:
+        return '_'
+
