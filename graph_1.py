@@ -1,16 +1,18 @@
-""" CSC110 Final Project
-
-This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
-"""
+"""Testing graphs and plot.ly"""
 
 import plotly
 import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import csv
-import Tweet
+from tweet import Tweet
+import reader
+import nltk
 
-from analyzer import calculate_word_emotion, calculate_word_count, analyze_tweets
+from analyzer import calc_word_emotions
+from analyzer import calc_word_count
+from analyzer import analyze_tweets
+
 
 # helpers
 
@@ -77,6 +79,7 @@ def categorize(list_of_topics: list[str],
 
     return score_data_so_far
 
+
 # above should give me {topic1: [{neg, pos, comp}, ...], topic2: [{neg, pos, comp}, ...]}
 
 # helper for below
@@ -103,6 +106,7 @@ def average_scores(topic_dict: dict[str, list[dict[str, float]]]) -> dict[str, d
 
     return new_topic_dict
 
+
 # above gives me {topic1: {neg, pos, comp}, topic2: {neg, pos, comp}}
 
 # set-up dataframe
@@ -116,17 +120,18 @@ def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> Non
         for _ in range(3):
             topics.append(topic)
         for sent_score in data[topic]:
-            scores.append(data[topic][sent_score])
+            if sent_score != 'neu':
+                scores.append(abs(data[topic][sent_score]))
 
     df = pd.DataFrame({
         'Sentiment': ['Negative', 'Positive', 'Compound'] * len(data),
-        'Topics': topics
+        'Topics': topics,
         'Sentiment Score': scores
     })
 
     # graph dataframe
     fig = px.bar(df, x='Topics', y='Sentiment Score', animation_frame='Sentiment',
-                 animation_group='Topics', range_y=[0, 5], color='Sentiment', barmode='group')
+                 animation_group='Topics', range_y=[0, 1], color='Sentiment', barmode='group')
     # fig.show()
     fig.write_html('my_figure.html')
 
