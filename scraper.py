@@ -36,17 +36,18 @@ csvWriter = csv.writer(csvFile)
 csvWriter.writerow(['id', 'date', 'contents', ])
 
 # scrape data
-# pass twitter queries into snt.TwitterSearchScraper() according to twitter rules
 while start_date <= current_date:
-    # print(f'Current Date:{start_date}')
+
     dt = start_date.strftime('%Y-%m-%d')
-    search_term = f'covid OR coronavirus OR covid19 OR corona lang:en since:{dt} until:{dt}'
-    print(f'search term:{search_term}')
+    dtn = start_date + timedelta(days=1)
+    dtn = dtn.strftime('%Y-%m-%d')
+
+    search_term = f'covid OR coronavirus OR covid19 OR corona lang:en since:{dt} until:{dtn}'
+
     for i, tweet in enumerate(snt.TwitterSearchScraper(search_term).get_items()):
         if i > tweets_per_day:
             break
-        if i % 10 == 0:
-            print(f'Found tweet number {i}')
+        print(f'Found tweet number {i} for date {dt}')
         csvWriter.writerow([tweet.id, tweet.date, tweet.content])
     start_date += timedelta(days=1)
 
