@@ -96,11 +96,13 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
     >>> scores = analyze_sentiment(list_of_tweets)
     >>> clean = clean_input(list_of_tweets)
     >>> roots = split_into_stems(clean)
+    >>> emotions = calc_word_emotions(scores, roots)
+
 
     """
 
     dict_so_far = {}
-    count_so_far = calc_word_emotions(roots)
+    count_so_far = calc_word_count(roots)
 
     for i in range(len(scores)):
         # Get the emotional score of a sentence and add it to the sum
