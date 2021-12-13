@@ -115,7 +115,8 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
             dict_so_far[stem] = dict_so_far[stem] + score['compound']
 
     for root in dict_so_far:
-        dict_so_far[root] = dict_so_far[root] / count_so_far[root]
+        emotional_score = dict_so_far[root] / count_so_far[root]
+        dict_so_far[root] = round(emotional_score, 5)
 
     return dict_so_far
 
