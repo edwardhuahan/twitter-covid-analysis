@@ -18,6 +18,43 @@ stopwords = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
              "few", "more", "most", "other", "some", "such", "no", "nor", "not", "only", "own", "same", "so", "than",
              "too", "very", "s", "t", "can", "will", "just", "don", "should", "now"]
 
+map_topics = {'conspiracy': {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip'},
+              'masks': {'antimask', 'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth'},
+              'quarantine': {'quarantin', 'lockdown', 'shutdown'},
+              'vaccine': {'antivax', 'mrna', 'vaccin', 'needl', 'vax', 'booster'}}
+topic_keywords = {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip', 'antimask',
+                  'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth', 'quarantin',
+                  'lockdown', 'shutdown', 'antivax', 'mrna', 'vaccin', 'needl',
+                  'vax', 'booster'}
+
+
+def analyze_tweets(tweets: list[Tweet]) -> list[tuple[Tweet, dict[str, float], set[str]]]:
+    """ Given a list of tweets, return a list containing tuples with the tweets and their
+    sentiment scores and category.
+
+    >>> import datetime
+    >>> example = [Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')]
+    >>> example_analysis = analyze_tweets(example)
+    >>> example_analysis[0][0].content
+    'vaccines are good'
+    >>> example_analysis[0][1]
+    {'neg': 0.0, 'neu': 0.408, 'pos': 0.592, 'compound': 0.4404}
+    >>> example_analysis[0][2]
+    {'vaccine'}
+    """
+
+    sentiment_score = analyze_sentiment(tweets)
+    clean = clean_input(tweets)
+    stems = split_into_stems(clean)
+
+    # Analyze each sentence
+    analyzed_tweets_so_far = []
+    for i in range(len(tweets)):
+        categories = find_sentence_topic(stems[i])
+        analyzed_tweets_so_far.append((tweets[i], sentiment_score[i], categories))
+
+    return analyzed_tweets_so_far
+
 
 def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
     """ Return the emotional score in order of the tweets given using the VADER lexicon.
@@ -25,10 +62,15 @@ def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
     emotional scores which can be accessed using 'compound', 'neu', 'pos' or 'neg'
 
     >>> import datetime
-    >>> example_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')
-    >>> analysis = analyze_sentiment([example_tweet])
+    >>> example_pos_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')
+    >>> analysis = analyze_sentiment([example_pos_tweet])
     >>> analysis[0]['compound']
     0.4404
+
+    >>> example_neg_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'i hate vaccines')
+    >>> analysis = analyze_sentiment([example_neg_tweet])
+    >>> analysis[0]['compound']
+    -0.5719
 
     """
 
@@ -117,14 +159,15 @@ def calculate_word_count(stems_list: list[list[str]]) -> dict[str, int]:
 
 
 def calculate_word_emotion(scores: list[dict[str, int]], roots: list[list[str]]) -> dict[str, float]:
-    """ Return each word with its average emotional score.
+    """ Return each word with its average emotional score, given a list of list of stems and
+    a list of sentiment dictionaries.
 
     >>> import reader
     >>> list_of_tweets = reader.read_tweet_data('scraper-output/scrapes.csv')
     >>> scores = analyze_sentiment(list_of_tweets)
     >>> clean = clean_input(list_of_tweets)
     >>> roots = split_into_stems(clean)
-    >>> calculate_word_emotion(scores, roots)
+
     """
 
     dict_so_far = {}
@@ -143,3 +186,43 @@ def calculate_word_emotion(scores: list[dict[str, int]], roots: list[list[str]])
         dict_so_far[root] = dict_so_far[root] / count_so_far[root]
 
     return dict_so_far
+
+
+def find_sentence_topic(sentence: list[str]) -> set[str]:
+    """Checks which category a sentence belongs to
+    If word is in keyword then check which topic it's in and return the topic as str
+    Else return _
+
+    >>> example_sentence = ['vaccines are a hoax']
+    >>> example_stems = split_into_stems(example_sentence)
+    >>> find_sentence_topic(example_stems[0]) == {'conspiracy', 'vaccine'}
+    True
+    """
+
+    category_so_far = set()
+    for word in sentence:
+        category = find_word_topic(word)
+        if category != '_':
+            category_so_far.add(category)
+
+    return category_so_far
+
+
+def find_word_topic(word: str) -> str:
+    """Checks which category a word belongs to
+    If word is in keyword then check which topic it's in and return the topic as str
+    Else return _
+
+    >>> find_word_topic('vaccin')
+    'vaccine'
+    >>> find_word_topic('test')
+    '_'
+    """
+
+    if word in topic_keywords:
+        for tpc in map_topics:
+            if word in map_topics[tpc]:  # this actually won't work unless you convert word to stem
+                return tpc
+    else:
+        return '_'
+
