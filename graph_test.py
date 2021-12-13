@@ -1,4 +1,7 @@
-"""Testing graphs and plot.ly"""
+""" CSC110 Final Project
+
+This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
+"""
 
 import plotly
 import plotly.graph_objects as go
