@@ -7,7 +7,6 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from nltk.stem import PorterStemmer
 from tweet import Tweet
 
-
 STOPWORDS = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "you",
              "your", "yours", "yourself", "yourselves", "he", "him", "his", "himself",
              "she", "her", "hers", "herself", "it", "its", "itself", "they", "them", "their",
@@ -25,11 +24,13 @@ STOPWORDS = ['', "i", "me", "my", "myself", "we", "our", "ours", "ourselves", "y
 MAP_TOPICS = {'conspiracy': {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip'},
               'masks': {'antimask', 'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth'},
               'quarantine': {'quarantin', 'lockdown', 'shutdown'},
-              'vaccine': {'antivax', 'mrna', 'vaccin', 'needl', 'vax', 'booster'}}
+              'vaccine': {'antivax', 'mrna', 'vaccin', 'needl', 'vax', 'booster', 'unvax'},
+              'covid': {'covid-19', 'covid19', 'covid', 'viru', 'pandem', 'epidem'}}
 TOPIC_KEYWORDS = {'hoax', 'lie', 'conspiraci', 'trump', 'fake', 'chip', 'antimask',
                   'mrna', 'n95', 'kn94', 'facemask', 'mask', 'cloth', 'quarantin',
                   'lockdown', 'shutdown', 'antivax', 'mrna', 'vaccin', 'needl',
-                  'vax', 'booster'}
+                  'vax', 'booster', 'covid-19', 'covid19', 'covid', 'viru', 'pandem',
+                  'epidem'}
 
 
 def analyze_tweets(tweets: list[Tweet]) -> list[tuple[Tweet, dict[str, float], set[str]]]:
@@ -109,16 +110,32 @@ def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> 
         # for every root found in the sentence
         stems = roots[i]
         score = scores[i]
+
         for stem in stems:
-            if stem not in dict_so_far:
-                dict_so_far[stem] = 0
-            dict_so_far[stem] = dict_so_far[stem] + score['compound']
+            sum_topic_words(stem, dict_so_far, score)
 
     for root in dict_so_far:
         emotional_score = dict_so_far[root] / count_so_far[root]
         dict_so_far[root] = round(emotional_score, 5)
 
     return dict_so_far
+
+
+def sum_topic_words(stem: str, sum_dict: dict[str, float], score: dict[str, float]) -> None:
+    """ Checks if a word is a topic keyword. If so, add the sum of its emotional score
+    to the sum dictionary.
+
+    >>> stem = 'vaccin'
+    >>> sum_dict = {}
+    >>> score = {'compound': -1.0}
+    >>> sum_topic_words(stem, sum_dict, score)
+    >>> sum_dict
+    {'vaccin': -1.0}
+    """
+    if stem in TOPIC_KEYWORDS:
+        if stem not in sum_dict:
+            sum_dict[stem] = 0
+        sum_dict[stem] = sum_dict[stem] + score['compound']
 
 
 def calc_word_count(stems_list: list[list[str]]) -> dict[str, int]:
