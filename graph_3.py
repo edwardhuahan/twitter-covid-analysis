@@ -3,12 +3,9 @@
 This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 
-import datetime
-import reader
 import plotly.express as px
 import pandas as pd
 from tweet import Tweet
-import analyzer
 from graph_1 import average_list_dict
 
 
@@ -21,8 +18,10 @@ def sort_tweets_by_date(
     belonging to that day"""
     days_so_far = {}
     for tweet in tweets:
-        month_day_year = str(tweet[0].date.month) + '/' + \
-                         str(tweet[0].date.day) + '/' + str(tweet[0].date.year)
+        month = str(tweet[0].date.month)
+        day = str(tweet[0].date.day)
+        year = str(tweet[0].date.year)
+        month_day_year = month + '/' + day + '/' + year
         if month_day_year not in days_so_far:
             days_so_far[month_day_year] = []
         days_so_far[month_day_year].append(tweet[1])
@@ -59,3 +58,21 @@ def graph_3(tweet_data: dict[str, dict[str, float]]) -> None:
 
     fig.show()
     # fig.write_html('my_figure.html')
+
+
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    # When you are ready to check your work with python_ta, uncomment the following lines.
+    # (Delete the "#" and space before each line.)
+    # IMPORTANT: keep this code indented inside the "if __name__ == '__main__'" block
+    python_ta.check_all(config={
+        'extra-imports': ['plotly.express', 'pandas', 'tweet', 'graph_1'],
+        'allowed-io': [],  # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })
