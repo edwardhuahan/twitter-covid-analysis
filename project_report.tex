@@ -1,0 +1,85 @@
+\documentclass[fontsize=11pt]{article}
+\usepackage{amsmath}
+\usepackage{apacite}
+\usepackage[utf8]{inputenc}
+\usepackage[margin=0.75in]{geometry}
+
+\title{CSC110 Project Proposal: Analysis of Twitter sensationalism surrounding COVID-19}
+\author{Edward Han, Zekun Liu, Arvin Gingoyon}
+\date{Friday, November 5, 2021}
+
+\begin{document}
+\maketitle
+
+\section*{Problem Description and Research Question}
+
+Since the start of the pandemic back in March 2020, discussion surrounding COVID-19 has given rise to false information online. One of the main sources of this is social media, which gives people an easily accessible platform to spread misinformation. Twitter stands out as one of the major social media applications that has contributed to this issue. Like other social media platforms, users are able to share media, photos, articles, and messages in the form of tweets. With tweets, users have the freedom to share any piece of information they desire, allowing information to spread rapidly across a large amount of people.
+
+On Twitter, sensationalist discussions surrounding the virus contribute to fits of hysteria in response to the pandemic. This was first seen during the toilet paper and hand sanitizer shortage at the beginning of the pandemic, a prime example of individuals losing their rationality due to misinformation.
+
+Detecting and quickly identifying sensationalism is critical in ensuring Twitter users, and those who use social media in general, are able to discern the truth from various sources. If the population is more educated on legitimate information surrounding the virus, the process of tackling the pandemic would become more efficient as a whole.
+
+For social media analysis, it’s important to understand what sources are trustworthy and which ones are not. For twitter and social media especially, it can be incredibly useful to have an understanding of what themes/topics that are more or less trustworthy, unbiased and otherwise free of manipulation. This will help researchers deploy more or less filtering techniques to gather better data in the future.
+
+For this project, we aim to answer the questions: \textbf{Which aspects/topics/themes around COVID have been subject to the most sensationalism and fear mongering? Are there any observable patterns in fear mongering associated with major events during the pandemic?}
+
+
+\section*{Dataset Description}
+
+The dataset we used was collected using a module that we developed ourselves that is dependent on snscraper \cite{snscrape}. The data collected is in the format\\
+\begin{tabular}{|l|l|l|}
+    \hline
+    \verb|tweet id| & \verb|tweet date and time| & \verb|contents| \\
+    \hline
+\end{tabular} \\
+With the csv headers being:\\
+id,date,contents\\
+Tweet id is a string of numbers that was collected in case the tweet needs to be re-hydrated as some point in the future, tweet date and time is in the format YYYY-MM-DD HH:MM:SS saved as a string and tweet contents is a string of the text contents of the tweet.  \\
+Our script took measures to ensure that the data collected is relevant. First, the tweets were filtered to only be in English to ensure that the sentiment analyzer module works as intended. Secondly, the module allows for a start date and total tweet input for finer control over how many tweets are collected by the scraper. The module ensures that the same amount of tweets (based on the total tweets input) are collected each day in the date range given by the start date so that users of the data will be able to gain insights over longer periods of time should they choose to. And of finally, we of course filtered the tweets to all mention the term or a variant of the term "covid19" to make make sure that all data collected is covid related.
+
+\section*{Computations}
+For the aggregation and transformation of data, we will create a Twitter Scraper to create a collection of tweets, filtering out non-covid related tweets, based on keywords found in the entire tweet or in the hashtags. We find that snscrape or Twitter APIs are appropriate for this kind of aggregation, and more than adequate for our purposes to generate a CSV file \cite{snscrape}.
+
+The scraper collects the total number of tweets to bescraped and a start date in the form YYYY/MM/DD as inputs. Then, it collects the current date using datetime.now and makes the start date a datetime object using strpdate(). Then, the it find the time delta in days between the two dates and converts that value to an integer to perform an integer division to figure out how many tweets are to be scraped per day.
+
+Following this, the program opens a csv file named scrapes, or will create a new file with that name if it doesn't exist and loads it with the correct header.
+
+Following this, the program goes into a while loop in which the start date is the loop variable and is increased every iteration using timedelta(), the loop stops once the start date is the current date. Within the loop, it creates 2 string dates using strftime() named dt (date) and dtn (date next) to create a search term in an f string expression that constrains snscraper to only pick up tweets from that day. Following this, an enumerate loop begins which passes the search term into snscraper.TwitterSearchScraper() to collect the tweets, the loop breaks once the loop runs for a number of times dictated by the number of tweets per day as calculated earlier. Each tweet is appended into the csv file opened earlier.\\
+Once all loops finishes running, the module closes the csv file.
+
+% TODO need to explain how computations are done
+To compute the data using analyze.py, first \verb|analyze_sentiment()| iterates through each Tweet object found in its input using the VADER lexicon \cite{vader}. This returns a dictionary that contains the compound, positive, negative and neutral emotional scores in each tweet. \verb|calc_word_emotions()| takes a list of Tweet objects and their emotional scores and for each topic keyword, sums up the emotional score of every sentence that a keyword is used in. From there, the average is taken to calculate how negatively or positively a topic is spoken about. The helper function \verb|calc_word_count()| counts how many times a keyword is used in all the twitter data to help in calculating the average emotional value of a word.
+
+\verb|calc_sentence_topic()| takes only the stems of a sentence and if it discovers that a stem in a given sentence is a keyword, it will assign its respective topic(s) to the sentence. \verb|split_into_stems()| takes input that is in lowercase and stripped of information that is not useful and attempts to remove suffixes from all words in a sentence to allow the code to function better. The input for this can be cleaned using the helper function \verb|clean_input()|. To split code into stems, this is done using PorterStemmer from the Natural Language Toolkit library or NLTK \cite{nltk}. Using this method, 'vaccine' and 'vaccination' both are stemmed into 'vaccin'. This is so that the code can more accurately detect topics.
+
+We used plotly to map frequencies of sensationalist tweets to certain dates, in order to analyze certain trends in regards to the posting of fear-mongering tweets. Possible findings can include identifying an overall increase or decrease to sensationalist tweets, or if certain events resulted in more sensationalist tweets than others. If we are able to sort tweets by theme/topic then we will conduct additional analysis for each theme/topic, such as if certain COVID related topics are more saturated by sensationalism than others, and how each event affected the sentiment of different COVID topics. This analysis will result from the aggregation of sentiment analysis scores of each tweet. The graphical presentation of our findings will be done using the plot.ly api, with the most appropriate solutions applied \cite{plotly}.
+
+\section*{Instructions for Obtaining Data and Running}
+All files should be in the same folder as \verb|main.py|. To acquire more data, the scraper.py file can be run as a module or a script to scrape some more Tweets. A start date in the format of 'YYYY/MM/DD' and 'number of total tweets wanted' in integers can be passed to the module to customize the output, however default parameters are used if it's run as a script. Due to reasons outlined in the issues discussion section, Twitter may block the scraper from working. As such, we have provided an example dataset in scrapes.csv that we collected and will be running tests on.
+
+To install the \verb|nltk| package, run \verb|import nltk| followed by \verb|nltk.download('vader_lexicon')| in the console to download required data for the library.
+\section*{Description of Changes}
+Based on prior feedback, we decided to ensure that the majority of our code did not depend on third-party libraries.
+\section*{Results Discussion}
+\section*{Issues Discussion}
+Due to a deliberate choice on the behalf of Twitter, the twitter api will prevent the scraper from functioning if queries are made too quickly (or if the module is run off of a AWS based system) by not giving the snscraper module a guest token. This happens by chance, with the probability of the issue occuring increasing the faster (and thus the shorter the) the queries are sent. This is something that neither we, the team behind this report nor the developer of snscraper can fix.
+
+However, this issue can be worked around if a delay is introduced between each query. This can be done by coding in a delay using something like time.sleep(), however we chose not to implement this and instead chose to scrape 500 tweets per day as our use case does not demand data from a great number of days. If this scraper is ever used to analyze trends across a larger period of time, it is recommended to rework the timedelta loop so that it loops over weeks instead of days to reduce the number of queries made.
+
+\section*{Further Exploration Discussion}
+The scraping method that we used was limited in its approach, and could be modified so that the user will be able to select a specific time range to answer our research question in respect to major events on the pandemic timeline. Another limitation is that with the keyword based approach, the scraper only picks up tweets that mentions covid19 outright, there should be a way, perhaps using the NLTK library to find tweets that relate to covid19 implicitly. Finally, to solve the issue outlined in the Issues Discussion section a academic research licence can be obtained which will give us theoretically unfettered access to Twitter's public data.
+
+For the purposes of this project, we explored a naive approach to topic categorization by simply checking for stem words that are related to topic groups. In the future, this can be expanded through the usage of a topic modeller that can train on preexisting data to identify what topics a particular tweet is discussing. This unsupervised machine learning method would be a great fit for this project but due to our limited knowledge we could not implement such a feature.
+
+We can also scrape data off of various social media platforms to better understand sentiments across various platforms such as Facebook, Instagram and Reddit to gain more insight.
+
+Another extension could be the usage of multiple lexicons to obtain more data on the sentiment of a tweet, using potentially AFINN, Bing or NRC to obtain a more holistic analysis.
+% NOTE: LaTeX does have a built-in way of generating references automatically,
+% but it's a bit tricky to use so we STRONGLY recommend writing your references
+% manually, using a standard academic format like APA or MLA.
+% (E.g., https://owl.purdue.edu/owl/research_and_citation/apa_style/apa_formatting_and_style_guide/general_format.html)
+
+\bibliographystyle{apacite}
+\bibliography{References}
+
+\end{document}
