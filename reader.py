@@ -9,6 +9,9 @@ from tweet import Tweet
 
 def read_tweet_data(filename: str) -> list[Tweet]:
     """ Read csv file data and create Tweet dataclasses using the values in each column
+
+    Preconditions:
+        - the file has to have the following headers: id,date,content
     """
 
     inputs_so_far = []

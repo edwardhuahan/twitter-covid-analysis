@@ -23,11 +23,15 @@ from datetime import datetime, timedelta
 import snscrape.modules.twitter as snt
 
 
-def scrape(start_date: str, max_tweets: int) -> None:
+def scrape(start_date_raw: str, max_tweets: int) -> None:
     """ Takes a start date and tweet limit and exports tweets from date range
     to export into a CSV file containing tweet id, tweet content and tweet date.
 
-    :param start_date: Str, A date in the format YYYY/MM/DD
+    Preconditions:
+        - datetime.strptime(start_date_raw, "%Y/%m/%d") <= datetime.now()
+        - max_tweets >= 0
+
+    :param start_date_raw: Str, A date in the format YYYY/MM/DD
     :param max_tweets: Int, The number of total tweets you want
     :return: None, creates a csv file with the scraped tweets
     """
@@ -39,7 +43,7 @@ def scrape(start_date: str, max_tweets: int) -> None:
     #  has been moved to the parameters
 
     #   Convert start_date into a datetime object
-    start_date = datetime.strptime(start_date, "%Y/%m/%d")
+    start_date = datetime.strptime(start_date_raw, "%Y/%m/%d")
     start_date = start_date.date()
 
     #  find tweets per day

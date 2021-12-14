@@ -66,6 +66,9 @@ def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
     The return type is a list of dictionaries with compound, neutral, positive and negative
     emotional scores which can be accessed using 'compound', 'neu', 'pos' or 'neg'
 
+    Preconditions:
+        - all(len(msg.content) > 0 for msg in msgs)
+
     >>> import datetime
     >>> example_pos_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')
     >>> analysis = analyze_sentiment([example_pos_tweet])
@@ -146,7 +149,6 @@ def calc_word_count(stems_list: list[list[str]]) -> dict[str, int]:
     >>> count = calc_word_count(example_list)
     >>> count == {'test': 2, 'one': 1, 'two': 1, 'three': 2}
     True
-
     """
 
     count_so_far = {}
@@ -164,6 +166,9 @@ def calc_sentence_topic(sentence: list[str]) -> set[str]:
     """Checks which category a sentence belongs to
     If word is in keyword then check which topic it's in and return the topic as str
     Else return _
+
+    Preconditions:
+        - all(len(msg) > 0 for msg in sentence)
 
     >>> example_sentence = ['vaccines are a hoax']
     >>> example_stems = split_into_stems(example_sentence)
@@ -185,6 +190,9 @@ def calc_word_topic(word: str) -> str:
     If word is in keyword then check which topic it's in and return the topic as str
     Else return _
 
+    Preconditions:
+        - len(word) > 0
+
     >>> calc_word_topic('vaccin')
     'vaccine'
     >>> calc_word_topic('test')
@@ -203,10 +211,12 @@ def split_into_stems(msgs: list[str]) -> list[list[str]]:
     """ Takes a list of cleaned input and splits it into word stems.
     Also removes all stopwords, which are words typically ignored in linguistic analysis.
 
+    Preconditions:
+        - all(len(msg) > 0 for msg in msgs)
+
     >>> example_list = ['vaccines are good']
     >>> split_into_stems(example_list)
     [['vaccin', 'good']]
-
     """
     porter = PorterStemmer()
 
@@ -222,6 +232,9 @@ def split_into_stems(msgs: list[str]) -> list[list[str]]:
 def clean_input(msgs: list[Tweet]) -> list[str]:
     """ Takes a list of strings and returns a new list of strings that converts all tweet contents
     into lowercase and also removes all punctuation. Removes hyperlinks and new lines.
+
+    Preconditions:
+        - all(len(msg.content) > 0 for msg in msgs)
 
     >>> import datetime
     >>> example_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'Vaccines, are good!??')
