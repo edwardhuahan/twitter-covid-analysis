@@ -88,7 +88,7 @@ def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
     return scores_so_far
 
 
-def calc_word_emotions(scores: list[dict[str, int]], roots: list[list[str]]) -> dict[str, float]:
+def calc_word_emotions(scores: list[dict[str, float]], roots: list[list[str]]) -> dict[str, float]:
     """ Return each word with its average emotional score,
     given a list of a list of stems and a list of sentiment dictionaries.
 
