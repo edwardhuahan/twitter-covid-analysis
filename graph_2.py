@@ -72,7 +72,7 @@ def graph_2(emotional_words: dict[str, float]) -> None:
 
     fig2.update_layout(title_text='Top 10 Most Emotional Words')
     fig2.show()
-    # fig2.write_html('my_figure.html')
+    # fig2.write_html('graph2.html')
 
 
 if __name__ == '__main__':

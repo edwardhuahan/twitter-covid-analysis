@@ -29,7 +29,6 @@ if __name__ == '__main__':
     sorted_tweets = graph_3.sort_tweets_by_date(read_data_3)
     graph_3_data = graph_3.average_scores(sorted_tweets)
 
-    # Creates all 3 graphs
     graph_1.graph_1(graph_1_data)
     graph_2.graph_2(graph_2_data)
     graph_3.graph_3(graph_3_data)
