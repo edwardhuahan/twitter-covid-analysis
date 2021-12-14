@@ -70,11 +70,11 @@ def graph_2(emotional_words: dict[str, float]) -> None:
         y.append(most_positive[pos_key[i]])
         y.append(most_negative[neg_key[i]])
 
-    fig = go.Figure()
-    fig.add_trace(go.Bar(x=x, y=y))
+    fig2 = go.Figure()
+    fig2.add_trace(go.Bar(x=x, y=y))
 
-    fig.update_layout(title_text='Top 10 Most Emotional Words')
-    fig.show()
-    # fig.write_html('my_figure.html')
+    fig2.update_layout(title_text='Top 10 Most Emotional Words')
+    fig2.show()
+    # fig2.write_html('my_figure.html')
 
 

@@ -54,8 +54,8 @@ def graph_3(tweet_data: dict[str, dict[str, float]]) -> None:
         'Average Compound Score': comp_scores
     })
 
-    # fig = px.bar(df, x='Dates', y='Average Compound Score')
-    fig = px.line(df, x='Dates', y='Average Compound Score')
+    fig3 = px.line(df, x='Dates', y='Average Compound Score')
 
-    fig.show()
-    # fig.write_html('my_figure.html')
+    fig3.update_layout(title_text='Compound Sentiment Score over Time')
+    fig3.show()
+    # fig3.write_html('my_figure.html')
