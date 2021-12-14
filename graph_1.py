@@ -3,16 +3,9 @@
 This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 
-import plotly
-import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
-import csv
 from tweet import Tweet
-import reader
-import nltk
-
-from analyzer import calc_word_emotions, calc_word_count, analyze_tweets
 
 
 # Order of use:
@@ -71,7 +64,7 @@ def average_scores(topic_dict: dict[str, list[dict[str, float]]]) -> dict[str, d
 
 # set-up dataframe
 
-def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> None:
+def graph_1(data: dict[str, dict[str, float]]) -> None:
     """ Creates graph"""
 
     topics = []
@@ -95,4 +88,21 @@ def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> Non
 
     fig1.update_layout(title_text='Topics to Average Sentiment Scores')
     fig1.show()
-    fig1.write_html('graph1.html')
+    # fig1.write_html('my_figure.html')
+
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    # When you are ready to check your work with python_ta, uncomment the following lines.
+    # (Delete the "#" and space before each line.)
+    # IMPORTANT: keep this code indented inside the "if __name__ == '__main__'" block
+    python_ta.check_all(config={
+        'extra-imports': ['plotly.express', 'pandas', 'tweet'],
+        'allowed-io': [],  # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })

@@ -10,12 +10,8 @@ order of usage:
 4. use that output on graph_2 function
 """
 
-import reader
-import pandas as pd
 import plotly.graph_objects as go
 import nltk
-import analyzer
-from tweet import Tweet
 
 nltk.download('vader_lexicon')
 
@@ -46,6 +42,7 @@ def find_top_10(emotions: dict[str, float], smallest: bool) -> dict[str, float]:
         top_10_emotions_so_far[reverse_dict(emotions)[sent_score_key]] = sent_score_key
         if len(top_10_emotions_so_far) == 10:
             return top_10_emotions_so_far
+    return top_10_emotions_so_far
 
 
 def graph_2(emotional_words: dict[str, float]) -> None:
@@ -78,3 +75,19 @@ def graph_2(emotional_words: dict[str, float]) -> None:
     fig2.write_html('graph2.html')
 
 
+if __name__ == '__main__':
+    import python_ta
+    import python_ta.contracts
+
+    python_ta.contracts.DEBUG_CONTRACTS = False
+    python_ta.contracts.check_all_contracts()
+
+    # When you are ready to check your work with python_ta, uncomment the following lines.
+    # (Delete the "#" and space before each line.)
+    # IMPORTANT: keep this code indented inside the "if __name__ == '__main__'" block
+    python_ta.check_all(config={
+        'extra-imports': ['plotly.graph_objects', 'nltk'],
+        'allowed-io': [],  # the names (strs) of functions that call print/open/input
+        'max-line-length': 100,
+        'disable': ['R1705', 'C0200']
+    })
