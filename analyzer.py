@@ -68,6 +68,7 @@ def analyze_sentiment(msgs: list[Tweet]) -> list[dict[str, float]]:
 
     Preconditions:
         - all(len(msg.content) > 0 for msg in msgs)
+        - len(msgs) > 0
 
     >>> import datetime
     >>> example_pos_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'vaccines are good')
@@ -169,6 +170,7 @@ def calc_sentence_topic(sentence: list[str]) -> set[str]:
 
     Preconditions:
         - all(len(msg) > 0 for msg in sentence)
+        - len(sentence) > 0
 
     >>> example_sentence = ['vaccines are a hoax']
     >>> example_stems = split_into_stems(example_sentence)
@@ -213,6 +215,7 @@ def split_into_stems(msgs: list[str]) -> list[list[str]]:
 
     Preconditions:
         - all(len(msg) > 0 for msg in msgs)
+        - len(msgs) > 0
 
     >>> example_list = ['vaccines are good']
     >>> split_into_stems(example_list)
@@ -235,6 +238,7 @@ def clean_input(msgs: list[Tweet]) -> list[str]:
 
     Preconditions:
         - all(len(msg.content) > 0 for msg in msgs)
+        - len(msgs) > 0
 
     >>> import datetime
     >>> example_tweet = Tweet(1, datetime.datetime(2021, 12, 1), 'Vaccines, are good!??')
