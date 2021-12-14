@@ -84,11 +84,12 @@ def graph_1(data: dict[str, dict[str, float]]) -> None:
 
     # graph dataframe
     fig1 = px.bar(df, x='Topics', y='Sentiment Score', animation_frame='Sentiment',
-                 animation_group='Topics', range_y=[0, 1], color='Sentiment', barmode='group')
+                  animation_group='Topics', range_y=[0, 1], color='Sentiment', barmode='group')
 
     fig1.update_layout(title_text='Topics to Average Sentiment Scores')
     fig1.show()
-    # fig1.write_html('my_figure.html')
+    # fig1.write_html('graph1.html')
+
 
 if __name__ == '__main__':
     import python_ta

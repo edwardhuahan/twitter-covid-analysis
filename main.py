@@ -3,11 +3,11 @@
 This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
 """
 
-import reader
 import analyzer
-import tweet
-
-import graph_1, graph_2, graph_3
+import graph_1
+import graph_2
+import graph_3
+import reader
 
 list_of_topics = ['vaccine', 'masks', 'quarantine', 'conspiracy', 'covid']
 read_data = reader.read_tweet_data('test_data.csv')
@@ -31,6 +31,6 @@ graph_3_data = graph_3.average_scores(sorted_tweets)
 
 def run_graphs() -> None:
     """ Creates all 3 graphs"""
-    graph_1.graph_1(list_of_topics, graph_1_data)
+    graph_1.graph_1(graph_1_data)
     graph_2.graph_2(graph_2_data)
     graph_3.graph_3(graph_3_data)

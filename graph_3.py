@@ -57,7 +57,8 @@ def graph_3(tweet_data: dict[str, dict[str, float]]) -> None:
 
     fig3.update_layout(title_text='Compound Sentiment Score over Time')
     fig3.show()
-    # fig3.write_html('my_figure.html')
+    # fig3.write_html('graph3.html')
+
 
 if __name__ == '__main__':
     import python_ta
