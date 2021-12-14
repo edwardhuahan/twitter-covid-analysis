@@ -9,13 +9,11 @@ from tweet import Tweet
 from graph_1 import average_list_dict
 
 
-# recall format of tweets: list[tuple[Tweet, dict[str, float], set[str]]]
-
-
 def sort_tweets_by_date(
         tweets: list[tuple[Tweet, dict[str, float], set[str]]]) -> dict[str, list[dict]]:
     """ Returns dictionary mapping days of tweets to a list of the scores of all the tweets
     belonging to that day"""
+
     days_so_far = {}
     for tweet in tweets:
         month = str(tweet[0].date.month)
@@ -32,6 +30,7 @@ def sort_tweets_by_date(
 def average_scores(
         tweet_scores: dict[str, list[dict[str, float]]]) -> dict[str, dict[str, float]]:
     """ Maps dates to the average of its respective compound scores"""
+
     compound_tweet_so_far = {}
     for date in tweet_scores:
         compound_tweet_so_far[date] = average_list_dict(tweet_scores[date])
@@ -40,7 +39,8 @@ def average_scores(
 
 
 def graph_3(tweet_data: dict[str, dict[str, float]]) -> None:
-    """ Creates graph"""
+    """ Creates line graph displaying compound scores over dates"""
+
     dates = []
     comp_scores = []
 

@@ -8,17 +8,10 @@ import pandas as pd
 from tweet import Tweet
 
 
-# Order of use:
-# 0. use reader function on csv, then use analyze_tweets function in analyzer on that output
-# 1. use categorize and store it to a variable, lets say a
-# 2. input a into average_scores and store output into a variable, lets say b
-# 3. input b into function graph_1
-
 def categorize(list_of_topics: list[str],
                tweet_data: list[tuple[Tweet, dict[str, float], set[str]]]) -> dict[str, list[dict]]:
     """ Returns a dictionary mapping each topic in list_of_topics to a list of
     all the dictionaries of scores for those topics
-
     """
 
     score_data_so_far = {}
@@ -33,7 +26,7 @@ def categorize(list_of_topics: list[str],
     return score_data_so_far
 
 
-# above should give me {topic1: [{neg, pos, comp}, ...], topic2: [{neg, pos, comp}, ...]}
+# above gives {topic1: [{neg, pos, comp}, ...], topic2: [{neg, pos, comp}, ...]}
 
 # helper for below
 def average_list_dict(lst: list[dict[str, float]]) -> dict[str, float]:
@@ -60,12 +53,11 @@ def average_scores(topic_dict: dict[str, list[dict[str, float]]]) -> dict[str, d
     return new_topic_dict
 
 
-# above gives me {topic1: {neg, pos, comp}, topic2: {neg, pos, comp}}
-
-# set-up dataframe
+# above gives {topic1: {neg, pos, comp}, topic2: {neg, pos, comp}}
 
 def graph_1(data: dict[str, dict[str, float]]) -> None:
-    """ Creates graph"""
+    """ Creates bar graph displaying sentiment score (positive, negative, compound; specified
+    by slider) to the most significant covid related topics"""
 
     topics = []
     scores = []

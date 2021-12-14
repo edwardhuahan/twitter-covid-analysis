@@ -1,35 +1,25 @@
 """ CSC110 Final Project
 
 This file is Copyright (c) 2021 Edward Han, Zekun Liu, Arvin Gingoyon
-
-order of usage:
-
-1. use reader function on csv to get csv into the form list[Tweets]
-2. use all the analyzer functions to get output from calc_word_emotions
-3. use output from 2. in find_top_10
-4. use that output on graph_2 function
 """
 
 import plotly.graph_objects as go
-import nltk
-
-nltk.download('vader_lexicon')
 
 
 def reverse_dict(original: dict[any, any]) -> dict[any, any]:
-    """ Returns dictionary that is original with the key and value swapped (and value turned
-    into a string)
+    """ Returns dictionary that is the original but with the key and value
+    swapped
 
     >>> a = {'a': 1, 'c': 4, 'b': 2}
     >>> reverse_dict(a)
-    {'1': 'a', '4': 'c', '2': 'b'}
+    {1: 'a', 4: 'c', 2: 'b'}
     """
     return {original[key]: key for key in original}
 
 
 def find_top_10(emotions: dict[str, float], smallest: bool) -> dict[str, float]:
     """ Given a dictionary, returns a dictionary with the top 10 most
-    positive or negative words (specified by sign) in that dictionary"""
+    positive or negative words (specified by 'smallest' argument) in that dictionary"""
 
     sorted_emotions = sorted(reverse_dict(emotions), reverse=True)  # sorts keys in descending order
     if smallest:
@@ -46,7 +36,7 @@ def find_top_10(emotions: dict[str, float], smallest: bool) -> dict[str, float]:
 
 
 def graph_2(emotional_words: dict[str, float]) -> None:
-    """ Creates graph of most emotional words to their average emotional score"""
+    """ Creates relative bar graph of most emotional words to their average emotional score"""
 
     most_negative = find_top_10(emotional_words, True)
     neg_key = []
