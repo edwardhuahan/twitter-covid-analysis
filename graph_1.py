@@ -15,49 +15,8 @@ import nltk
 from analyzer import calc_word_emotions, calc_word_count, analyze_tweets
 
 
-# helpers
-
-# def load_data(filename: str) -> list[(str, dict)]:
-#     """ Returns list of tuples in the format (date, score) for the given topic csv file"""
-#
-#     date_to_score_so_far = []
-#
-#     with open(filename) as file:
-#         reader = csv.reader(file, delimiter=',')
-#         next(reader)  # skip the header
-#
-#         for row in reader:
-#             date_to_score_so_far.append((row[0], row[1]))  # (date, score)
-#
-#     return date_to_score_so_far
-#
-#
-# topics_scores = []  # list[list[(str, dict)]]
-#
-#
-# for topic_file in list_of_topics:
-#     topics_scores.append(load_data(topic_file))
-#
-# avg_scores_so_far = []
-#
-# for i in range(len(list_of_topics)):
-#     neg_so_far = 0
-#     pos_so_far = 0
-#     comp_so_far = 0
-#     for str_dict in topics_scores[i]:
-#         neg_so_far += str_dict[1]['negative']
-#         pos_so_far += str_dict[1]['positive']
-#         comp_so_far += str_dict[1]['compound']
-#
-#     avg_scores_so_far.append(neg_so_far)
-#     avg_scores_so_far.append(pos_so_far)
-#     avg_scores_so_far.append(comp_so_far)
-
-# format input: list[(Tweet, score: dict, topic: {str})]
-
-# list_of_topics = ['vaccine', 'masks', 'quarantine', 'conspiracy']
-
 # Order of use:
+# 0. use reader function on csv, then use analyze_tweets function in analyzer on that output
 # 1. use categorize and store it to a variable, lets say a
 # 2. input a into average_scores and store output into a variable, lets say b
 # 3. input b into function graph_1
@@ -135,9 +94,3 @@ def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> Non
                  animation_group='Topics', range_y=[0, 1], color='Sentiment', barmode='group')
     # fig.show()
     fig.write_html('my_figure.html')
-
-# df = pd.DataFrame({
-#     'Sentiment': ['Negative', 'Positive', 'Compound', 'Negative', 'Positive', 'Compound'],
-#     'Topics': ['Covid', 'Covid', 'Covid', 'Vaccine', 'Vaccine', 'Vaccine'],
-#     'Sentiment Score': [1, 2, 1, 3, 2, 1]
-# })
