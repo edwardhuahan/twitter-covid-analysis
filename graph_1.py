@@ -95,4 +95,4 @@ def graph_1(list_of_topics: list[str], data: dict[str, dict[str, float]]) -> Non
 
     fig1.update_layout(title_text='Topics to Average Sentiment Scores')
     fig1.show()
-    # fig1.write_html('my_figure.html')
+    fig1.write_html('graph1.html')
