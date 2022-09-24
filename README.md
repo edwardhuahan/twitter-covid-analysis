@@ -1,3 +1,5 @@
+![csc110](https://user-images.githubusercontent.com/17802344/192080697-bebf6a45-d9ad-4340-9dc9-d2b954e785f8.png)
+
 # Twitter Sentiment Analysis Tool
 Since the start of the pandemic back in March 2020, discussion surrounding COVID-19 has given rise to false information online. One of the main sources of this is social media, which gives people an easily accessible platform to spread misinformation. Twitter stands out as one of the major social media applications that has contributed to this issue. Like other social media platforms, users are able to share media, photos, articles, and messages in the form of tweets. With tweets, users have the freedom to share any piece of information they desire, allowing information to spread rapidly across a large amount of people.
 
@@ -24,6 +26,7 @@ Following this, the program goes into a while loop in which the start date is th
 Once all loops finishes running, the module closes the csv file.
 
 # Install requirements
+
 
 https://www.nltk.org/data.html
 
